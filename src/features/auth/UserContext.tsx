@@ -1,5 +1,6 @@
 import { createContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { setCurrentUserId } from "@/lib/api/userIdMiddleware";
+import { queryClient } from "@/lib/queryClient";
 
 const STORAGE_KEY = "simple-forum:user-id";
 const NAME_RE = /^[a-zA-Z0-9_-]{2,32}$/;
@@ -34,6 +35,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     logout() {
       localStorage.removeItem(STORAGE_KEY);
       setUserId(null);
+      queryClient.clear();
     },
   }), [userId]);
 
