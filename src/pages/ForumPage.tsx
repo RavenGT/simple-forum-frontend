@@ -1,22 +1,35 @@
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useForum } from "@/features/forums/useForum";
 import { ForumHeader } from "@/features/forums/ForumHeader";
+import { useForumPosts } from "@/features/posts/useForumPosts";
+import { PostListItem } from "@/features/posts/PostListItem";
+import { Button } from "@/components/ui/button";
 import NotFoundPage from "./NotFoundPage";
 
 export default function ForumPage() {
   const { forumName } = useParams<{ forumName: string }>();
-  const { data: forum, isLoading, isError, error } = useForum(forumName ?? "");
+  const forum = useForum(forumName ?? "");
+  const posts = useForumPosts(forumName ?? "");
 
   if (!forumName) return <NotFoundPage />;
-  if (isLoading) return <p className="p-6 text-slate-500">Loading forum…</p>;
-  if (isError && /not found/i.test(String(error))) return <NotFoundPage />;
-  if (isError || !forum) return <p className="p-6 text-slate-600">Couldn't load r/{forumName}.</p>;
+  if (forum.isLoading) return <p className="p-6 text-slate-500">Loading forum…</p>;
+  if (forum.isError || !forum.data) return <NotFoundPage />;
 
   return (
     <div>
-      <ForumHeader forum={forum} />
+      <ForumHeader forum={forum.data} />
       <div className="max-w-3xl mx-auto p-6">
-        <p className="text-slate-500">Posts list — coming in Task 31.</p>
+        <div className="flex justify-end mb-3">
+          <Button asChild><Link to={`/submit?forum=${forumName}`}>+ New post</Link></Button>
+        </div>
+        {posts.isLoading && <p className="text-slate-500">Loading posts…</p>}
+        {posts.isError && <p className="text-slate-600">Couldn't load posts.</p>}
+        {posts.data && posts.data.length === 0 && <p className="text-slate-500">No posts in r/{forumName} yet.</p>}
+        {posts.data && posts.data.length > 0 && (
+          <div className="bg-white rounded border border-slate-200 divide-y">
+            {posts.data.map((post) => <PostListItem key={post.id} post={post} />)}
+          </div>
+        )}
       </div>
     </div>
   );
