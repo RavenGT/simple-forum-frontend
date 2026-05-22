@@ -24,7 +24,7 @@ if (existsSync(backendSpec)) {
 }
 
 execSync(
-  `node --experimental-vm-modules node_modules/.bin/openapi-typescript "${localSpec}" --output src/lib/api/schema.ts`,
+  `npx openapi-typescript "${localSpec}" --output src/lib/api/schema.ts`,
   { stdio: "inherit", cwd: repoRoot }
 );
 console.log("Regenerated src/lib/api/schema.ts");
