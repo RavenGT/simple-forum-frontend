@@ -5,6 +5,7 @@ import { ForumRightRail } from "@/features/forums/ForumRightRail";
 import { VoteButtons } from "@/features/posts/VoteButtons";
 import { relativeTime } from "@/lib/relativeTime";
 import { RightRail } from "@/layout/RightRail";
+import { CommentList } from "@/features/comments/CommentList";
 import NotFoundPage from "./NotFoundPage";
 
 export default function PostPage() {
@@ -35,7 +36,7 @@ export default function PostPage() {
           </div>
         </article>
         <section id="comments" className="mt-6">
-          <p className="text-slate-500">{post.data.commentCount ?? 0} comments — coming in Task 48.</p>
+          <CommentList postId={postId} />
         </section>
       </div>
       <RightRail>{forum.data && <ForumRightRail forum={forum.data} />}</RightRail>
