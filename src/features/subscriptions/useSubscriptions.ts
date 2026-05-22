@@ -6,7 +6,7 @@ export function useSubscriptions(userId: string | null) {
     queryKey: ["subscriptions", userId],
     enabled: Boolean(userId),
     queryFn: async () => {
-      const { data, error } = await api.GET("/api/users/me/subscriptions", {});
+      const { data, error } = await (api.GET as any)("/api/users/me/subscriptions", {});
       if (error) throw new Error("Failed to load subscriptions");
       return data!;
     },
