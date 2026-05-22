@@ -8,7 +8,7 @@ export function useDeleteComment(postId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (commentId: string) => {
-      const { error } = await api.DELETE("/api/comments/{id}", { params: { path: { id: commentId } } });
+      const { error } = await (api.DELETE as any)("/api/comments/{id}", { params: { path: { id: commentId } } });
       if (error) throw new Error("Failed to delete comment");
     },
     onSuccess: () => {

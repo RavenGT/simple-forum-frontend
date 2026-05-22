@@ -5,7 +5,7 @@ export function useUpdateComment(postId: string) {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ commentId, content }: { commentId: string; content: string }) => {
-      const { data, error } = await api.PUT("/api/comments/{id}", { params: { path: { id: commentId } }, body: { postId, content } });
+      const { data, error } = await (api.PUT as any)("/api/comments/{id}", { params: { path: { id: commentId } }, body: { postId, content } });
       if (error) throw new Error("Failed to update comment");
       return data!;
     },

@@ -1,6 +1,9 @@
 import { Link } from "react-router-dom";
 import { useUser } from "@/features/auth/useUser";
 import { useSubscriptions } from "@/features/subscriptions/useSubscriptions";
+import type { components } from "@/lib/api/schema";
+
+type Forum = components["schemas"]["ForumResponse"];
 
 export function Sidebar() {
   const { userId } = useUser();
@@ -15,7 +18,7 @@ export function Sidebar() {
         {userId && subs.data && subs.data.length === 0 && <p className="text-slate-500">No subscriptions yet</p>}
         {userId && subs.data && subs.data.length > 0 && (
           <ul className="space-y-1">
-            {subs.data.map((f) => (
+            {subs.data.map((f: Forum) => (
               <li key={f.name}>
                 <Link to={`/r/${f.name}`} className="text-slate-700 hover:underline">r/{f.name}</Link>
               </li>
