@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import { usePost } from "@/features/posts/usePost";
 import { useForum } from "@/features/forums/useForum";
-import { ForumHeader } from "@/features/forums/ForumHeader";
+import { ForumRightRail } from "@/features/forums/ForumRightRail";
 import { VoteButtons } from "@/features/posts/VoteButtons";
 import { relativeTime } from "@/lib/relativeTime";
 import { RightRail } from "@/layout/RightRail";
@@ -38,7 +38,7 @@ export default function PostPage() {
           <p className="text-slate-500">{post.data.commentCount ?? 0} comments — coming in Task 48.</p>
         </section>
       </div>
-      <RightRail>{forum.data && <ForumHeader forum={forum.data} />}</RightRail>
+      <RightRail>{forum.data && <ForumRightRail forum={forum.data} />}</RightRail>
     </div>
   );
 }
