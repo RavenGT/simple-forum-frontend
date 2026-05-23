@@ -4,11 +4,17 @@ import { useUpdateComment } from "./useUpdateComment";
 import { useDeleteComment } from "./useDeleteComment";
 import { useVoteComment } from "./useVoteComment";
 import { CommentForm } from "./CommentForm";
-import { getVote } from "@/lib/voteState";
 import { relativeTime } from "@/lib/relativeTime";
 import type { components } from "@/lib/api/schema";
 
 type Comment = components["schemas"]["CommentResponse"];
+type VoteType = components["schemas"]["VoteType"];
+
+function toLocal(v: VoteType | null | undefined): "up" | "down" | null {
+  if (v === "UPVOTE") return "up";
+  if (v === "DOWNVOTE") return "down";
+  return null;
+}
 
 export function CommentItem({ comment, postId }: { comment: Comment; postId: string }) {
   const { userId } = useUser();
@@ -20,13 +26,11 @@ export function CommentItem({ comment, postId }: { comment: Comment; postId: str
   const [confirmDelete, setConfirmDelete] = useState(false);
 
   const score = (comment.upvoteCount ?? 0) - (comment.downvoteCount ?? 0);
-  const myVote = userId ? getVote(userId, "comment", comment.id!) : null;
+  const myVote = toLocal(comment.userVote);
 
   function doVote(direction: "up" | "down") {
     if (!userId) return;
-    vote.mutate({ commentId: comment.id!, direction }, {
-      onError(err) { if (err.message === "__noop__") return; },
-    });
+    vote.mutate({ commentId: comment.id!, direction });
   }
 
   return (

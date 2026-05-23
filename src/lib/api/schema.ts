@@ -15,7 +15,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: never;
-                header?: never;
+                header?: {
+                    /** @description When provided, populates the userVote field in responses */
+                    "X-User-Id"?: components["parameters"]["optionalUserId"];
+                };
                 path?: never;
                 cookie?: never;
             };
@@ -84,7 +87,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: never;
-                header?: never;
+                header?: {
+                    /** @description When provided, populates the userVote field in responses */
+                    "X-User-Id"?: components["parameters"]["optionalUserId"];
+                };
                 path: {
                     id: components["parameters"]["postId"];
                 };
@@ -191,7 +197,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Upvote a post */
+        /** Upvote a post (toggle - calling again removes the vote) */
         post: {
             parameters: {
                 query?: never;
@@ -205,12 +211,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Vote recorded */
+                /** @description Vote recorded or removed */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["VoteResponse"];
+                    };
                 };
                 /** @description Post not found */
                 404: {
@@ -236,7 +244,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Downvote a post */
+        /** Downvote a post (toggle - calling again removes the vote) */
         post: {
             parameters: {
                 query?: never;
@@ -250,12 +258,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Vote recorded */
+                /** @description Vote recorded or removed */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["VoteResponse"];
+                    };
                 };
                 /** @description Post not found */
                 404: {
@@ -461,7 +471,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: never;
-                header?: never;
+                header?: {
+                    /** @description When provided, populates the userVote field in responses */
+                    "X-User-Id"?: components["parameters"]["optionalUserId"];
+                };
                 path: {
                     name: components["parameters"]["forumName"];
                 };
@@ -620,7 +633,10 @@ export interface paths {
                 query: {
                     postId: string;
                 };
-                header?: never;
+                header?: {
+                    /** @description When provided, populates the userVote field in responses */
+                    "X-User-Id"?: components["parameters"]["optionalUserId"];
+                };
                 path?: never;
                 cookie?: never;
             };
@@ -710,7 +726,10 @@ export interface paths {
         get: {
             parameters: {
                 query?: never;
-                header?: never;
+                header?: {
+                    /** @description When provided, populates the userVote field in responses */
+                    "X-User-Id"?: components["parameters"]["optionalUserId"];
+                };
                 path: {
                     id: components["parameters"]["commentId"];
                 };
@@ -831,7 +850,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Upvote a comment */
+        /** Upvote a comment (toggle - calling again removes the vote) */
         post: {
             parameters: {
                 query?: never;
@@ -845,12 +864,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Vote recorded */
+                /** @description Vote recorded or removed */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["VoteResponse"];
+                    };
                 };
                 /** @description Comment not found */
                 404: {
@@ -876,7 +897,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Downvote a comment */
+        /** Downvote a comment (toggle - calling again removes the vote) */
         post: {
             parameters: {
                 query?: never;
@@ -890,12 +911,14 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Vote recorded */
+                /** @description Vote recorded or removed */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        "application/json": components["schemas"]["VoteResponse"];
+                    };
                 };
                 /** @description Comment not found */
                 404: {
@@ -934,6 +957,7 @@ export interface components {
             upvoteCount?: number;
             downvoteCount?: number;
             commentCount?: number;
+            userVote?: components["schemas"]["VoteType"];
         };
         ForumRequest: {
             name: string;
@@ -965,11 +989,19 @@ export interface components {
             updatedAt?: string;
             upvoteCount?: number;
             downvoteCount?: number;
+            userVote?: components["schemas"]["VoteType"];
         };
+        VoteResponse: {
+            userVote?: components["schemas"]["VoteType"];
+        };
+        /** @enum {string|null} */
+        VoteType: "UPVOTE" | "DOWNVOTE" | null;
     };
     responses: never;
     parameters: {
         userId: string;
+        /** @description When provided, populates the userVote field in responses */
+        optionalUserId: string;
         postId: string;
         forumName: string;
         commentId: string;

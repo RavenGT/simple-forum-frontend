@@ -24,7 +24,7 @@ export default function PostPage() {
       <div className="flex-1 min-w-0 max-w-3xl mx-auto p-6">
         <article className="bg-white border rounded p-4">
           <div className="flex">
-            <VoteButtons postId={postId} forumName={forumName} score={score} />
+            <VoteButtons postId={postId} forumName={forumName} score={score} userVote={post.data.userVote} />
             <div className="pl-3 flex-1 min-w-0">
               <p className="text-xs text-slate-500">
                 r/{post.data.forumName} · posted by u/{post.data.userId}

@@ -1,13 +1,26 @@
 import { Link, useLocation } from "react-router-dom";
 import { useUser } from "@/features/auth/useUser";
 import { useVotePost } from "./useVotePost";
-import { getVote } from "@/lib/voteState";
+import type { components } from "@/lib/api/schema";
 
-export function VoteButtons({ postId, forumName, score }: { postId: string; forumName: string; score: number }) {
+type VoteType = components["schemas"]["VoteType"];
+
+function toLocal(v: VoteType | null | undefined): "up" | "down" | null {
+  if (v === "UPVOTE") return "up";
+  if (v === "DOWNVOTE") return "down";
+  return null;
+}
+
+export function VoteButtons({ postId, forumName, score, userVote }: {
+  postId: string;
+  forumName: string;
+  score: number;
+  userVote: VoteType | null | undefined;
+}) {
   const { userId } = useUser();
   const location = useLocation();
   const mutation = useVotePost(userId);
-  const myVote = userId ? getVote(userId, "post", postId) : null;
+  const myVote = toLocal(userVote);
 
   if (!userId) {
     const returnTo = encodeURIComponent(location.pathname + location.search);
@@ -21,9 +34,7 @@ export function VoteButtons({ postId, forumName, score }: { postId: string; foru
   }
 
   function vote(direction: "up" | "down") {
-    mutation.mutate({ postId, forumName, direction }, {
-      onError(err) { if (err.message === "__noop__") return; },
-    });
+    mutation.mutate({ postId, forumName, direction });
   }
 
   return (

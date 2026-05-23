@@ -9,7 +9,7 @@ export function PostListItem({ post }: { post: Post }) {
   const score = (post.upvoteCount ?? 0) - (post.downvoteCount ?? 0);
   return (
     <article className="flex border-b border-slate-200 bg-white px-2 py-2 hover:bg-slate-50">
-      <VoteButtons postId={post.id!} forumName={post.forumName!} score={score} />
+      <VoteButtons postId={post.id!} forumName={post.forumName!} score={score} userVote={post.userVote} />
       <div className="flex-1 pl-2 min-w-0">
         <div className="text-xs text-slate-500">
           <Link to={`/r/${post.forumName}`} className="hover:underline">r/{post.forumName}</Link>
