@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useUser } from "@/features/auth/useUser";
 import { useSubscriptions } from "@/features/subscriptions/useSubscriptions";
+import { useForums } from "@/features/forums/useForums";
 import type { components } from "@/lib/api/schema";
 
 type Forum = components["schemas"]["ForumResponse"];
@@ -8,6 +9,10 @@ type Forum = components["schemas"]["ForumResponse"];
 export function Sidebar() {
   const { userId } = useUser();
   const subs = useSubscriptions(userId);
+  const forums = useForums();
+  const sortedForums = forums.data
+    ? [...forums.data].sort((a, b) => (a.name ?? "").localeCompare(b.name ?? ""))
+    : [];
 
   return (
     <aside className="w-56 border-r bg-white p-4 text-sm flex flex-col gap-4">
@@ -26,8 +31,23 @@ export function Sidebar() {
           </ul>
         )}
       </section>
+      <section className="border-t pt-4">
+        <h2 className="text-xs uppercase tracking-wide text-slate-500 mb-2">All Forums</h2>
+        {forums.isLoading && <p className="text-slate-500">Loading…</p>}
+        {sortedForums.length === 0 && !forums.isLoading && (
+          <p className="text-slate-500">No forums yet</p>
+        )}
+        {sortedForums.length > 0 && (
+          <ul className="space-y-1">
+            {sortedForums.map((f) => (
+              <li key={f.name}>
+                <Link to={`/r/${f.name}`} className="text-slate-700 hover:underline">r/{f.name}</Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
       <section className="border-t pt-4 space-y-1">
-        <Link to="/forums" className="block text-slate-700 hover:underline">Browse all forums</Link>
         <Link to="/forums/new" className="block text-slate-700 hover:underline">+ Create forum</Link>
       </section>
     </aside>
