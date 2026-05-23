@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/lib/api/client";
+import { getCurrentUserId } from "@/lib/api/userIdMiddleware";
+import { setVote } from "@/lib/voteState";
 import type { components } from "@/lib/api/schema";
 
 type Req = components["schemas"]["PostRequest"];
@@ -14,6 +16,8 @@ export function useCreatePost() {
       return data!;
     },
     onSuccess: (created) => {
+      const userId = getCurrentUserId();
+      if (userId && created.id) setVote(userId, "post", created.id, "up");
       qc.invalidateQueries({ queryKey: ["posts"] });
       qc.invalidateQueries({ queryKey: ["forums", created.forumName, "posts"] });
     },
