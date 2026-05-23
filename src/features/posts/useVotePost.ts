@@ -8,11 +8,9 @@ type Post = components["schemas"]["PostResponse"];
 type Variables = { postId: string; forumName: string; direction: VoteValue };
 type Snapshot = { post: Post | undefined; posts: Post[] | undefined; forumPosts: Post[] | undefined; prevVote: VoteValue | null };
 
-function applyDelta(post: Post, prev: VoteValue | null, next: VoteValue): Post {
+function applyDelta(post: Post, _prev: VoteValue | null, next: VoteValue): Post {
   let up = post.upvoteCount ?? 0;
   let down = post.downvoteCount ?? 0;
-  if (prev === "up") up -= 1;
-  if (prev === "down") down -= 1;
   if (next === "up") up += 1;
   if (next === "down") down += 1;
   return { ...post, upvoteCount: up, downvoteCount: down };

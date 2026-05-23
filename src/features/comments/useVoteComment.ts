@@ -8,11 +8,9 @@ type Comment = components["schemas"]["CommentResponse"];
 type Variables = { commentId: string; direction: VoteValue };
 type Snapshot = { list: Comment[] | undefined; prevVote: VoteValue | null };
 
-function applyDelta(c: Comment, prev: VoteValue | null, next: VoteValue): Comment {
+function applyDelta(c: Comment, _prev: VoteValue | null, next: VoteValue): Comment {
   let up = c.upvoteCount ?? 0;
   let down = c.downvoteCount ?? 0;
-  if (prev === "up") up -= 1;
-  if (prev === "down") down -= 1;
   if (next === "up") up += 1;
   if (next === "down") down += 1;
   return { ...c, upvoteCount: up, downvoteCount: down };
