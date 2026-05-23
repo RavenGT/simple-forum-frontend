@@ -48,10 +48,8 @@ export function useVoteComment(userId: string | null, postId: string) {
       if (list) qc.setQueryData(key, list.map((c) => c.id === vars.commentId ? applyDelta(c, prev, vars.direction) : c));
       return { list };
     },
-    onSuccess(data, vars) {
-      const newVote = data?.userVote ?? null;
-      const list = qc.getQueryData<Comment[]>(key);
-      if (list) qc.setQueryData(key, list.map((c) => c.id === vars.commentId ? { ...c, userVote: newVote } : c));
+    onSuccess() {
+      qc.invalidateQueries({ queryKey: key });
     },
     onError(_err, _vars, snap) {
       if (snap?.list !== undefined) qc.setQueryData(key, snap.list);

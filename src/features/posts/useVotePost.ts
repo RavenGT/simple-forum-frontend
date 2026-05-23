@@ -55,15 +55,10 @@ export function useVotePost(userId: string | null) {
       if (snap.forumPosts) qc.setQueryData(["forums", vars.forumName, "posts"], snap.forumPosts.map(patchOne));
       return snap;
     },
-    onSuccess(data, vars) {
-      const newVote = data?.userVote ?? null;
-      const patch = (p: Post) => p.id === vars.postId ? { ...p, userVote: newVote } : p;
-      const post = qc.getQueryData<Post>(["posts", vars.postId]);
-      if (post) qc.setQueryData(["posts", vars.postId], { ...post, userVote: newVote });
-      const posts = qc.getQueryData<Post[]>(["posts"]);
-      if (posts) qc.setQueryData(["posts"], posts.map(patch));
-      const forumPosts = qc.getQueryData<Post[]>(["forums", vars.forumName, "posts"]);
-      if (forumPosts) qc.setQueryData(["forums", vars.forumName, "posts"], forumPosts.map(patch));
+    onSuccess(_data, vars) {
+      qc.invalidateQueries({ queryKey: ["posts", vars.postId] });
+      qc.invalidateQueries({ queryKey: ["posts"] });
+      qc.invalidateQueries({ queryKey: ["forums", vars.forumName, "posts"] });
     },
     onError(_err, vars, snap) {
       if (!snap) return;
